@@ -13,6 +13,7 @@ import com.project.info.CartesianProduct;
 import com.project.info.FilterCartesianProduct;
 import com.project.info.Operation;
 import com.project.info.Project;
+import com.project.settings.AppSettings;
 
 /**
  * This file responsible for generate migration rules using Cartesian Product
@@ -21,6 +22,7 @@ import com.project.info.Project;
 public class MigrationRulesClient {
 
 	public static void main(String[] args) {
+		AppSettings.loadAppSettings();
 		new MigrationRulesClient().start();
 
 	}

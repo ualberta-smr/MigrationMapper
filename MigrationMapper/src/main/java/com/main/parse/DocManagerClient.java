@@ -18,6 +18,7 @@ import com.library.Docs.ParseHTML;
 import com.library.lib.MethodLib;
 import com.library.source.DownloadLibrary;
 import com.project.info.Project;
+import com.project.settings.AppSettings;
 import com.segments.build.TerminalCommand;
 
 /*
@@ -40,6 +41,7 @@ public class DocManagerClient {
 	ParseHTML parseHTML = new ParseHTML();
 
 	public static void main(String[] args) {
+		AppSettings.loadAppSettings();
 		new DocManagerClient().run();
 	}
 

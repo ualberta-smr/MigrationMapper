@@ -15,7 +15,8 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println(
 				"Enter type of projects that you want to Scan:\n0 - Maven projects ( pom.xml) \n1 - Android Projects (build.gradle) ");
-		int projectType = scanner.nextInt();
+		int projectType = 0;
+		// int projectType = scanner.nextInt();
 		switch (projectType) {
 		case 0:
 			AppSettings.projectType = ProjectType.Java;

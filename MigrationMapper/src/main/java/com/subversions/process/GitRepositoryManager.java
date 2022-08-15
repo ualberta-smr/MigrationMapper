@@ -14,7 +14,6 @@ import com.subversions.process.*;
 
 public class GitRepositoryManager {
 
-	String LOG_FILE_NAME = "app_commits.txt";
 	static String pathClone = Paths.get(".").toAbsolutePath().normalize().toString() + "/Clone/";
 	static String pathfiles = Paths.get(".").toAbsolutePath().normalize().toString();
 
@@ -38,6 +37,8 @@ public class GitRepositoryManager {
 			// Read File Line By Line
 			try {
 				while ((strLine = br.readLine()) != null) {
+					if (strLine.startsWith("#"))
+						continue;
 					listOfGitRepositories.add(strLine.trim());
 				}
 			} catch (IOException e) {

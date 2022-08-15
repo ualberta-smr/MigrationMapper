@@ -15,6 +15,7 @@ import com.database.mysql.RepositoriesDB;
 import com.library.Docs.MethodDocs;
 import com.library.source.MethodObj;
 import com.library.source.MigratedLibraries;
+import com.project.settings.AppSettings;
 import com.segments.build.Segment;
 import com.segments.build.TerminalCommand;
 import com.subversions.process.GitRepositoryManager;
@@ -23,6 +24,7 @@ public class FragmentDocsMapperClient {
 	static String projectPath = Paths.get(".").toAbsolutePath().normalize().toString();
 
 	public static void main(String[] args) {
+		AppSettings.loadAppSettings();
 		// TODO Auto-generated method stub
 		new FragmentDocsMapperClient().run();
 	}

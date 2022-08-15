@@ -1,7 +1,6 @@
 package com.main.parse;
 
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -18,6 +17,7 @@ import com.library.source.MigratedLibraries;
 
 import com.project.info.Operation;
 import com.project.info.Project;
+import com.project.settings.AppSettings;
 import com.segments.build.CleanJavaCode;
 import com.segments.build.Segment;
 import com.segments.build.TerminalCommand;
@@ -35,7 +35,7 @@ public class DetectorClient {
 	CleanJavaCode cleanJavaCode = new CleanJavaCode();
 
 	public static void main(String[] args) {
-
+		AppSettings.loadAppSettings();
 		// TODO Auto-generated method stub
 		new DetectorClient().start();
 		System.out.println("process done");
@@ -365,14 +365,14 @@ public class DetectorClient {
 		if (gitHubOP.isAppExist(previousCommitName) == false) {
 			gitHubOP.copyApp(previousCommitName);
 			String firstCommitID = GitHubOP.getCommitID(previousCommitName);
-			gitHubOP.gitCheckout(previousCommitName, firstCommitID);
+			gitHubOP.gitCheckout(firstCommitID);
 		}
 
 		// clone second commit
 		if (gitHubOP.isAppExist(migrateAtCommitName) == false) {
 			gitHubOP.copyApp(migrateAtCommitName);
 			String secondCommitID = GitHubOP.getCommitID(migrateAtCommitName);
-			gitHubOP.gitCheckout(migrateAtCommitName, secondCommitID);
+			gitHubOP.gitCheckout(secondCommitID);
 		}
 
 		return listOfChangedFiles;

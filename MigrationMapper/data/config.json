@@ -1,10 +1,10 @@
 {
   	"dbConnection": {
-         "url":  "jdbc:mysql://localhost/MigrationMapper?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-         "userName": "Add user name here",
-         "password":"Add password here"
+         "url":  "jdbc:mysql://localhost/MigrationMapperCleanable?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+         "userName": "root",
+         "password":"root"
     	},
     "githubConnection": {
-         "developerToken": "Add Github developer kep here"
+         "developerToken": "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"
     }
 }

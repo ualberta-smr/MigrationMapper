@@ -9,6 +9,7 @@ import com.database.mysql.MigrationRuleDB;
 import com.database.mysql.MigrationSegmentsDB;
 import com.database.mysql.RepositoriesDB;
 import com.library.source.MigratedLibraries;
+import com.project.settings.AppSettings;
 import com.segments.build.Segment;
 
 /*
@@ -18,7 +19,7 @@ public class FunctionMappingClient {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		AppSettings.loadAppSettings();
 		 new FunctionMappingClient().run();
 	}
 	

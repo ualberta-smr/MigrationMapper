@@ -16,6 +16,7 @@ import com.database.mysql.RepositoriesDB;
 import com.library.Docs.MethodDocs;
 import com.library.source.MethodObj;
 import com.library.source.MigratedLibraries;
+import com.project.settings.AppSettings;
 import com.segments.build.Segment;
 import com.segments.build.TerminalCommand;
 import com.subversions.process.GitRepositoryManager;
@@ -25,6 +26,7 @@ public class MethodsDocsMapperClient {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		AppSettings.loadAppSettings();
 		new MethodsDocsMapperClient().run();
 	}
 

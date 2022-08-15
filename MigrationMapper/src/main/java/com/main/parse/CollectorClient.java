@@ -7,13 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
 //JDON.jar used to parse XML
-import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -41,7 +37,7 @@ public class CollectorClient {
 	TerminalCommand terminalCommand = new TerminalCommand();
 
 	public static void main(String[] args) {
-
+		AppSettings.loadAppSettings();
 		new CollectorClient().startOnlineSearch();
 
 	}
@@ -83,8 +79,10 @@ public class CollectorClient {
 
 			gitHubOP.generateLogs(LOG_FILE_NAME);
 			// save commit info in database
-			ArrayList<Commit> commitList = gitHubOP.readLogFile(pathClone + "app_commits.txt",
+			ArrayList<Commit> commitList = gitHubOP.readLogFile(
 					ProjectBuildFile.getType());
+
+			System.out.println(commitList.size());
 
 			repositoriesDB.addNewProject(appURL, "Java", commitList);
 			// save this link in clean repo links
@@ -106,7 +104,7 @@ public class CollectorClient {
 				// commitID has (v12_commitID) we need to get only commit id
 				String[] spCommitIDInfo = commitInfo.commitID.split("_");
 				String commitID = spCommitIDInfo[1];
-				gitHubOP.gitCheckout(gitHubOP.appFolder, commitID);
+				gitHubOP.gitCheckout(commitID);
 
 				/*
 				 * we use commitInfo.filePath instead this ArrayList<String> listOfPaths=
@@ -130,8 +128,8 @@ public class CollectorClient {
 
 			// break;//TODO: will be removed
 			// }
-			gitHubOP.deleteFolder(appPath);
-			gitHubOP.deleteFolder(pathClone + LOG_FILE_NAME);
+			// gitHubOP.deleteFolder(appPath);
+			// gitHubOP.deleteFolder(pathClone + LOG_FILE_NAME);
 			System.out.println("--------------------------------------");
 			System.out.println("**************************************");
 			System.out.println("--------------------------------------");
