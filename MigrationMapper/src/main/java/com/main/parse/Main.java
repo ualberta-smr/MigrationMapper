@@ -12,23 +12,6 @@ public class Main {
 		
 		AppSettings.loadAppSettings();  // load database and github settings
 
-		Scanner scanner = new Scanner(System.in);
-		System.out.println(
-				"Enter type of projects that you want to Scan:\n0 - Maven projects ( pom.xml) \n1 - Android Projects (build.gradle) ");
-		int projectType = 0;
-		// int projectType = scanner.nextInt();
-		switch (projectType) {
-		case 0:
-			AppSettings.projectType = ProjectType.Java;
-			break;
-		case 1:
-			AppSettings.projectType = ProjectType.Android;
-			break;
-		default:
-			AppSettings.projectType = ProjectType.Java;
-			break;
-		}
-
 		// 1 Collection
 		new CollectorClient().startOnlineSearch();
 		// 2- Find migration rule
