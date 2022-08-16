@@ -1,5 +1,6 @@
 package com.main.parse;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import com.algorithims.sa.*;
@@ -8,7 +9,7 @@ import com.project.settings.ProjectType;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		AppSettings.loadAppSettings();  // load database and github settings
 

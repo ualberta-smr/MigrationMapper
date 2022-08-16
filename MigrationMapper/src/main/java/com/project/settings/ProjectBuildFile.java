@@ -10,6 +10,8 @@ public class ProjectBuildFile {
 
 		} else if (AppSettings.projectType == ProjectType.Android) {
 			buildFile = "build.gradle";
+		} else if (AppSettings.projectType == ProjectType.PYTHON) {
+			buildFile = "requirements.txt";
 		}
 
 		return buildFile;

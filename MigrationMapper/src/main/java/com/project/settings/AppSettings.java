@@ -55,11 +55,14 @@ public class AppSettings {
 
     private static ProjectType getProjectType(JSONObject obj) {
         String config = obj.getString("projectType");
-        if (config == "java")
-            return ProjectType.Java;
-        if (config == "android")
-            return ProjectType.Android;
-        return ProjectType.PYTHON;
+        switch (config) {
+            case "android":
+                return ProjectType.Android;
+            case "python":
+                return ProjectType.PYTHON;
+            default:
+                return ProjectType.Java;
+        }
     }
 
     public static void main(String[] args) {

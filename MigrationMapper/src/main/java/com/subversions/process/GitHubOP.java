@@ -214,7 +214,6 @@ public class GitHubOP {
     // Collect all vaild App commits
     // We get only commit that have changes in .java files otherwise ignored
     public ArrayList<Commit> readLogFile(String searchForFiles) {
-        System.out.println("We collect only commit that have changes in .java files otherwise ignored");
         ArrayList<Commit> commitList = new ArrayList<Commit>();
         commitNumber = 1;
         try {
