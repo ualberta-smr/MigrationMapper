@@ -370,10 +370,14 @@ public class CollectorClient {
 
         StringBuilder versionLibraries = new StringBuilder();
         for (String line : lines) {
-            if (!line.startsWith("#")) {
-                versionLibraries.append("," + line);
+            line = line.trim();
+            if (line.startsWith("#") || line.contains("/")) {
+                continue;
             }
+            versionLibraries.append("," + line);
         }
+        if (versionLibraries.toString().isEmpty())
+            return "";
         return versionLibraries.substring(1);
     }
 

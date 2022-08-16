@@ -9,7 +9,7 @@ import com.project.settings.ProjectType;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		
 		AppSettings.loadAppSettings();  // load database and github settings
 

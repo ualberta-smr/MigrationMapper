@@ -1,18 +1,15 @@
 package com.database.mysql;
 
+import com.project.info.Project;
+import com.project.settings.AppSettings;
+import com.project.settings.DatabaseLogin;
+import com.project.settings.ProjectType;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-
-import com.library.source.MigratedLibraries;
-import com.project.info.Project;
-import com.project.settings.AppSettings;
-import com.project.settings.DatabaseLogin;
-import com.project.settings.ProjectType;
-import com.segments.build.Segment;
-import com.subversions.process.Commit;
 
 public class ProjectLibrariesDB {
     /*
@@ -30,13 +27,8 @@ public class ProjectLibrariesDB {
     // isAdded=1 for add , isAdded=0 for removed
     public void addProjectLibrary(int ProjectID, String CommitID, String LibraryName, int isAdded, String projectPath) {
         // TODO: bad library donot get, for future we need to filter
-        if (AppSettings.projectType == ProjectType.Java || AppSettings.projectType == ProjectType.Android) {
-            String libraryInfo[] = LibraryName.split(":");
-            if (libraryInfo.length != 3)
-                return;
-            if (libraryInfo[0].length() == 0 || libraryInfo[1].length() == 0 || libraryInfo[2].length() == 0)
-                return;
-        }
+        if (!isValidLibrary(LibraryName))
+            return;
 
         Statement stmt = null;
         try {
@@ -56,6 +48,17 @@ public class ProjectLibrariesDB {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
         // System.out.println("Records created successfully");
+    }
+
+    private boolean isValidLibrary(String libName) {
+        if (AppSettings.projectType == ProjectType.Java || AppSettings.projectType == ProjectType.Android) {
+            String[] libraryInfo = libName.split(":");
+            if (libraryInfo.length != 3)
+                return false;
+            if (libraryInfo[0].length() == 0 || libraryInfo[1].length() == 0 || libraryInfo[2].length() == 0)
+                return false;
+        }
+        return true;
     }
 
     public ArrayList<Project> getProjectLibraries() {
@@ -84,14 +87,9 @@ public class ProjectLibrariesDB {
             ResultSet rs = stmt.executeQuery(query); // where ProjectsID=192"
             // System.out.println(query);
             while (rs.next()) {
+                if (!isValidLibrary(rs.getString("LibraryName")))
+                    continue;
 
-                String libraryInfo[] = rs.getString("LibraryName").split(":");
-                if (libraryInfo.length != 3) {
-                    continue;
-                }
-                if (libraryInfo[0].length() == 0 || libraryInfo[1].length() == 0 || libraryInfo[2].length() == 0) {
-                    continue;
-                }
                 listOfProjectLibraries.add(new Project(rs.getInt("ProjectsID"), rs.getString("CommitID"),
                         rs.getString("LibraryName").trim(), rs.getInt("isAdded"), rs.getString("PomPath")));
             }
@@ -139,14 +137,9 @@ public class ProjectLibrariesDB {
             // ProjectsID=192"
 
             while (rs.next()) {
+                if (!isValidLibrary(rs.getString("LibraryName")))
+                    continue;
 
-                String libraryInfo[] = rs.getString("LibraryName").split(":");
-                if (libraryInfo.length != 3) {
-                    continue;
-                }
-                if (libraryInfo[0].length() == 0 || libraryInfo[1].length() == 0 || libraryInfo[2].length() == 0) {
-                    continue;
-                }
                 listOfProjectLibraries.add(rs.getString("LibraryName").trim());
             }
             rs.close();
@@ -179,17 +172,15 @@ public class ProjectLibrariesDB {
 
             while (rs.next()) {
                 // not usefull library extaratec from pom.xml like ${project.groupId}:owlapi:xxx
-                if (rs.getString("LibraryName").indexOf("$") >= 0) {
+                String libraryName1 = rs.getString("LibraryName");
+                if (libraryName1.indexOf("$") >= 0) {
                     continue;
                 }
                 // TODO: bad library donot get, for future we need to filter
-                String libraryInfo[] = rs.getString("LibraryName").split(":");
-                if (libraryInfo.length != 3) {
+                if (!isValidLibrary(libraryName1))
                     continue;
-                }
-                if (libraryInfo[0].length() == 0 || libraryInfo[1].length() == 0 || libraryInfo[2].length() == 0) {
-                    continue;
-                }
+
+                String[] libraryInfo = libraryName1.split(":");
                 String artificateID = libraryInfo[1];
                 if (artificateID.indexOf("-") > 0) {
                     artificateID = artificateID.substring(0, artificateID.indexOf("-"));
