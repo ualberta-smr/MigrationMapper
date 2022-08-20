@@ -374,7 +374,7 @@ public class CollectorClient {
             if (line.startsWith("#") || line.contains("/")) {
                 continue;
             }
-            versionLibraries.append("," + line);
+            versionLibraries.append("," + line.toLowerCase().replace('_', '-'));
         }
         if (versionLibraries.toString().isEmpty())
             return "";
