@@ -2,6 +2,7 @@ package com.project.info;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.main.parse.PythonHelper;
 import com.project.settings.AppSettings;
@@ -61,7 +62,7 @@ public class CartesianProduct {
     }
 
     public static String libraryWithoutVersion(String librarName) throws IOException, InterruptedException {
-        if (AppSettings.projectType == ProjectType.PYTHON)
+        if (AppSettings.isPython())
             return PythonHelper.getLibSpec(librarName)[0];
 
         String[] AppInfo = librarName.split(":");
@@ -70,7 +71,7 @@ public class CartesianProduct {
     }
 
     public boolean isUpgradeProcess(String libraryName1, String libraryName2) throws IOException, InterruptedException {
-        if (AppSettings.projectType == ProjectType.PYTHON) {
+        if (AppSettings.isPython()) {
             String[] lib1Spec = PythonHelper.getLibSpec(libraryName1);
             String[] lib2Spec = PythonHelper.getLibSpec(libraryName2);
             return lib1Spec[0].equals(lib2Spec[0]);

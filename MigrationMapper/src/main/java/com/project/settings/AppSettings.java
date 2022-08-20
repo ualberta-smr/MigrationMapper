@@ -15,6 +15,13 @@ public class AppSettings {
     public static boolean isTest = false; // Make this true when you run test client
     public static boolean isUsingLD = true; // set if our search using library doumenation or not
     public static String pythonCmd;
+
+    public static boolean isPython() {
+        return projectType == ProjectType.PYTHON;
+    }
+
+    public static String codeFileSuffix;
+
     static public void loadAppSettings() {
 
         try {
@@ -23,6 +30,7 @@ public class AppSettings {
             JSONObject obj = new JSONObject(jsonString);
             JSONObject dbConnectionobj = obj.getJSONObject("dbConnection");
             projectType = getProjectType(obj);
+            codeFileSuffix = isPython() ? ".py" : ".java";
             pythonCmd = obj.getString("pythonCmd");
             DatabaseLogin.url = dbConnectionobj.getString("url");
             DatabaseLogin.username = dbConnectionobj.getString("userName");

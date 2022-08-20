@@ -95,7 +95,7 @@ public class MigrationRuleDB {
     }
 
     public static String[] getAppInfo(String libName) {
-        if (AppSettings.projectType == ProjectType.PYTHON) {
+        if (AppSettings.isPython()) {
             try {
                 String[] libSpec = PythonHelper.getLibSpec(libName);
                 return new String[]{"PYTHON", libSpec[0], libSpec[1]};

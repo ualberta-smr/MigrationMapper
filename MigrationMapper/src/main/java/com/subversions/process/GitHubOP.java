@@ -11,7 +11,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.main.parse.CollectorClient;
+import com.project.settings.AppSettings;
 import com.project.settings.GithubLogin;
+import org.apache.commons.io.FileUtils;
 
 public class GitHubOP {
     String command_runner = "cmd";
@@ -200,11 +202,12 @@ public class GitHubOP {
     // copy App
     public void copyApp(String newCopyName) {
         try {
-            System.out.println("==> Start copy: " + appFolder + ", to:" + newCopyName);
-            String cmdStr = "cd " + clonePath + " && cp -r " + appFolder + " " + newCopyName;
-            Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", cmdStr});
-            p.waitFor();
-            System.out.println("<== copy done");
+            FileUtils.copyDirectory(Paths.get(clonePath, appFolder).toFile(), Paths.get(clonePath, newCopyName).toFile());
+//            System.out.println("==> Start copy: " + appFolder + ", to:" + newCopyName);
+//            String cmdStr = "cd " + clonePath + " && cp -r " + appFolder + " " + newCopyName;
+//            Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", cmdStr});
+//            p.waitFor();
+//            System.out.println("<== copy done");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -388,17 +391,16 @@ public class GitHubOP {
     public ArrayList<String> getlistOfChangedFiles(String commitID) {
         commitID = getCommitID(commitID);
         ArrayList<String> listOfChangedFiles = new ArrayList<String>();
-        String commintsPath = clonePath + "app_commits.txt";
         try {
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(commintsPath)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(this.logFile)));
 
             String line;
             boolean commitInfo = false;
             while ((line = br.readLine()) != null) {
 
                 if (commitInfo == true) {
-                    if (line.startsWith("M") && line.endsWith(".java")) {
+                    if (line.startsWith("M") && line.endsWith(AppSettings.codeFileSuffix)) {
                         listOfChangedFiles.add(line.substring(2).trim());
 
                     }
@@ -413,7 +415,7 @@ public class GitHubOP {
             }
 
         } catch (IOException e) {
-            // do something
+            throw new RuntimeException(e);
         }
 
         return listOfChangedFiles;

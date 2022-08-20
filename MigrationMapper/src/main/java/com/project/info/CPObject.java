@@ -108,4 +108,8 @@ public class CPObject {
 		return listOfSolvedFragments;
 	}
 
+	@Override
+	public String toString() {
+		return value1 + ", " + value2;
+	}
 }
