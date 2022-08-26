@@ -16,20 +16,20 @@ public class Main {
 		// 1 Collection
 		new CollectorClient().startOnlineSearch();
 		// 2- Find migration rule
-		new MigrationRulesClient().start();
+		//new MigrationRulesClient().start();
 		// 3- Find code segments
 		new DetectorClient().start();
 		// 4- Collect Docs
-		new DocManagerClient().run();
+		// new DocManagerClient().run();
 
 		// 5- Print Fragments results as HTML 
-		new FragmentDocsMapperClient().run();
+		// new FragmentDocsMapperClient().run();
 		
 		// 6- Apply SA algorithm
-		new FunctionMappingClient().run();
+		// new FunctionMappingClient().run();
 		 
 		// 7- Print Method mapping results as HTML 
-		new MethodsDocsMapperClient().run();
+		//new MethodsDocsMapperClient().run();
 		
 
 	}

@@ -90,11 +90,12 @@ public class GitHubOP {
 
     public void deleteFolder(String folderPath) {
         try {
-            System.out.println("==> Start deleting ...");
-            String cmdStr = " rm -rf " + folderPath + "";
-            Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", cmdStr});
-            p.waitFor();
-            System.out.println("<== Complete delete");
+            FileUtils.deleteDirectory(Paths.get(this.gitPath).toFile());
+//            System.out.println("==> Start deleting ...");
+//            String cmdStr = " rm -rf " + folderPath + "";
+//            Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c", cmdStr});
+//            p.waitFor();
+//            System.out.println("<== Complete delete");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -156,14 +157,18 @@ public class GitHubOP {
         }
     }
 
-    public int runCommand(String command, String outfile) throws IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder(command_runner, command_option, command);
-        File file = new File(outfile);
-        file.createNewFile();
-        builder.redirectOutput(file);
-        Process p = builder.start();
-        p.waitFor();
-        return p.exitValue();
+    public int runCommand(String command, String outfile) {
+        try {
+            ProcessBuilder builder = new ProcessBuilder(command_runner, command_option, command);
+            File file = new File(outfile);
+            file.createNewFile();
+            builder.redirectOutput(file);
+            Process p = builder.start();
+            p.waitFor();
+            return p.exitValue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // clone the link in machine
@@ -419,5 +424,17 @@ public class GitHubOP {
         }
 
         return listOfChangedFiles;
+    }
+
+    public void createDiffs(String previousCommitName, String migrateAtCommitName, String changedFilePath, String outputDiffsPath) {
+        runCommand("git -C " + gitPath + " diff " + getCommitHash(previousCommitName) + " " + getCommitHash(migrateAtCommitName + " " + changedFilePath), outputDiffsPath);
+    }
+
+    public String getCommitHash(String commitName) {
+        String[] parts = commitName.split("_");
+        if (parts.length == 1) {
+            return parts[0];
+        }
+        return parts[1];
     }
 }

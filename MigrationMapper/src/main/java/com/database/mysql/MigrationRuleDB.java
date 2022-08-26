@@ -64,15 +64,16 @@ public class MigrationRuleDB {
     public LinkedList<MigrationRule> getMigrationRulesWithoutVersion(int isVaild) {
         LinkedList<MigrationRule> migrationRules = new LinkedList<MigrationRule>();
         Statement stmt = null;
+        Connection c = null;
+        ResultSet rs = null;
         try {
-            Connection c = null;
             Class.forName("com.mysql.cj.jdbc.Driver");
             c = DriverManager.getConnection(DatabaseLogin.url, DatabaseLogin.username, DatabaseLogin.password);
 
             c.setAutoCommit(false);
             stmt = c.createStatement();
             // TODO: return 0 to 1
-            ResultSet rs = stmt.executeQuery(
+            rs = stmt.executeQuery(
                     "select * from MigrationRules WHERE  isVaild=" + isVaild + " ORDER BY Frequency desc");
 
             while (rs.next()) {
@@ -83,12 +84,12 @@ public class MigrationRuleDB {
                 migrationRules.add(new MigrationRule(rs.getInt("ID"), FromLibrarySP[1], ToLibrarySP[1],
                         rs.getInt("Frequency"), 1.0));
             }
-            rs.close();
-            stmt.close();
-            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* Ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* Ignored */ }
+            try { c.close(); } catch (Exception e) { /* Ignored */ }
         }
 
         return migrationRules;
@@ -98,7 +99,7 @@ public class MigrationRuleDB {
         if (AppSettings.isPython()) {
             try {
                 String[] libSpec = PythonHelper.getLibSpec(libName);
-                return new String[]{"PYTHON", libSpec[0], libSpec[1]};
+                return new String[]{"PYTHON", libSpec[0], libSpec[2]};
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

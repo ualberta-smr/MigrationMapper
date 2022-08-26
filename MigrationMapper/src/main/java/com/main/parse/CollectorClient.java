@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -361,7 +362,12 @@ public class CollectorClient {
     }
 
     public String listOfPythonProjectLibrary(String projectVersionPath) throws IOException {
-        Path path = Paths.get(projectVersionPath);
+        Path path;
+        try {
+            path = Paths.get(projectVersionPath);
+        } catch (InvalidPathException e) {
+            return "";
+        }
         if (!path.toFile().exists())
             return "";
         List<String> lines = Files.readAllLines(path);
@@ -374,6 +380,7 @@ public class CollectorClient {
             if (line.startsWith("#") || line.contains("/")) {
                 continue;
             }
+            line = line.split("#")[0].trim();
             versionLibraries.append("," + line.toLowerCase().replace('_', '-'));
         }
         if (versionLibraries.toString().isEmpty())

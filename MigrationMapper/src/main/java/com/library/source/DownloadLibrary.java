@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.subversions.process.GitRepositoryManager;
 
-public class DownloadLibrary {
+public class DownloadLibrary implements DownloadLibraryBase{
 	// TODO need to update when machine chnage
 	static String pathlib;
 

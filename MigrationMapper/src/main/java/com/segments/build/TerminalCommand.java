@@ -1,16 +1,18 @@
 package com.segments.build;
 
+import com.subversions.process.GitHubOP;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 public class TerminalCommand {
 	// This command for create folder
 	public void createFolder(String folderPath) {
 		try {
 			System.out.println("==> create folder : " + folderPath);
-			String cmdStr = "mkdir -p " + folderPath;
-			System.out.println(cmdStr);
-			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", cmdStr });
-			p.waitFor();
+			Files.createDirectories(Paths.get(folderPath));
 			System.out.println("<== folder is created");
-
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -18,10 +20,9 @@ public class TerminalCommand {
 
 	// This function will create diff from two file
 	public void createDiffs(String oldFilePath, String newUpdatedFilePath, String outputDiffFilePath) {
-		String cmdStr = "diff " + oldFilePath + " " + newUpdatedFilePath + ">" + outputDiffFilePath;
 		try {
 			System.out.println("==> Generate Diff File: " + outputDiffFilePath);
-			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", cmdStr });
+			Process p = Runtime.getRuntime().exec(new String[] { "git", "diff", "--output="+outputDiffFilePath, oldFilePath, newUpdatedFilePath});
 			p.waitFor();
 			System.out.println("<== Generate done");
 
@@ -50,10 +51,8 @@ public class TerminalCommand {
 			// System.out.println("==> Start coping ...");
 			String cmdStr = " cp " + fromFilePath + " " + toFilePath;
 			// System.out.println(cmdStr);
-			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", cmdStr });
-			p.waitFor();
+			Files.copy(Paths.get(fromFilePath), Paths.get(toFilePath), StandardCopyOption.REPLACE_EXISTING);
 			// System.out.println("<== Complete Copy");
-
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
