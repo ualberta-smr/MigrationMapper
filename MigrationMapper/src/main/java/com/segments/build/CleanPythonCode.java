@@ -203,9 +203,10 @@ public class CleanPythonCode extends CleanCode {
 
     @Override
     public boolean isUsedNewLibrary(String codeFilePath, String addedLibrarySpec) {
-        if (!Paths.get(codeFilePath).toFile().exists())
-            return false;
-        return PythonHelper.isLibraryImported(codeFilePath, addedLibrarySpec);
+        return true;
+//        if (!Paths.get(codeFilePath).toFile().exists())
+//            return false;
+//        return PythonHelper.isLibraryImported(codeFilePath, addedLibrarySpec);
     }
 }
 
