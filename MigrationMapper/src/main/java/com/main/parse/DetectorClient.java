@@ -75,8 +75,10 @@ public class DetectorClient {
         // *********************************************************************
 
         for (MigrationRule migrationRule : migrationRules) {
+            System.out.println("===========================");
             System.out.println("==> Start search for migration rule " + migrationRule.FromLibrary + "<==> "
                     + migrationRule.ToLibrary);
+            System.out.println("===========================");
             MigratedLibraries.ID = migrationRule.ID;
 
             // get one vaild library signature to use it in self-admitted

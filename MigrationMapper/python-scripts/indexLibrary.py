@@ -4,8 +4,9 @@ import os
 import subprocess
 import sys
 import tarfile
-from _ast import FunctionDef
+from _ast import FunctionDef, ClassDef
 from pathlib import Path
+from typing import Any
 from zipfile import ZipFile
 
 import path_helper
@@ -102,6 +103,9 @@ class LibCodeVisitor(ast.NodeVisitor):
         if not func_name.startswith(self.skip_prefix):
             self.functions.add(func_name)
         self.generic_visit(node)
+
+    def visit_ClassDef(self, node: ClassDef) -> Any:
+        self.functions.add(node.name)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,8 @@
 import ast
 import json
+import os
 import sys
-from _ast import Call, Attribute
+from _ast import Call, Attribute, Subscript
 
 import path_helper
 
@@ -26,12 +27,21 @@ class FunctionCallVisitor(ast.NodeVisitor):
     def func_name(self, func):
         if isinstance(func, Call):
             func = func.func
-        if isinstance(func, Attribute):
+        elif isinstance(func, Subscript):
+            func = func.value
+        if hasattr(func, "attr"):
             return func.attr
         return func.id
 
 
 if __name__ == '__main__':
+    # sys.argv += [
+    #     "raven==6.10.0",
+    #     "../Clone/Diffs/1/v2274_d10cb162447d9e3a9506b76054851863b10ff27a/diff_middleware.py_before.java",
+    #     "312",
+    #     "8"
+    # ]
+
     lib_spec, source_path, start_line, lines_count = sys.argv[1:5]
     lib_path = path_helper.get_lib_index_file_path(lib_spec)
     with open(lib_path) as file:

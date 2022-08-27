@@ -30,8 +30,10 @@ public class CleanPythonCode extends CleanCode {
                     segment.removedCode = PythonHelper.getUsedFunctions(MigratedLibraries.fromLibrary, before[0], before[1], diffFilePath.replace(".txt", "_before.java"));
                     segment.addedCode = PythonHelper.getUsedFunctions(MigratedLibraries.toLibrary, after[0], after[1], diffFilePath.replace(".txt", "_after.java"));
 
-                    if (!segment.removedCode.isEmpty() && !segment.addedCode.isEmpty())
+                    if (!segment.removedCode.isEmpty() && !segment.addedCode.isEmpty()) {
+                        segment.fileName = Paths.get(diffFilePath).getFileName().toString().replace(".txt", "");
                         segments.add(segment);
+                    }
                 }
             }
             return segments;
