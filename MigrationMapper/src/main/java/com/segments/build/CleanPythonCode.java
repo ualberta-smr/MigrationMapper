@@ -18,21 +18,23 @@ public class CleanPythonCode extends CleanCode {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(diffFilePath)));
             List<String> lines = br.lines().collect(Collectors.toList());
-            ArrayList<Segment> hunks = new ArrayList<>();
+            ArrayList<Segment> segments = new ArrayList<>();
 
-            Segment currentHunk = new Segment();
+            Segment segment = new Segment();
             for (String line : lines) {
                 if (line.startsWith("@@")) {
                     String[] parts = line.split(" ");
                     String[] before = parts[1].substring(1).split(",");
                     String[] after = parts[2].substring(1).split(",");
-                    currentHunk = new Segment();
-                    currentHunk.removedCode = PythonHelper.getUsedFunctions(MigratedLibraries.fromLibrary, before[0], before[1], diffFilePath.replace(".txt", "_before.java"));
-                    currentHunk.addedCode = PythonHelper.getUsedFunctions(MigratedLibraries.toLibrary, after[0], after[1], diffFilePath.replace(".txt", "_after.java"));
-                    hunks.add(currentHunk);
+                    segment = new Segment();
+                    segment.removedCode = PythonHelper.getUsedFunctions(MigratedLibraries.fromLibrary, before[0], before[1], diffFilePath.replace(".txt", "_before.java"));
+                    segment.addedCode = PythonHelper.getUsedFunctions(MigratedLibraries.toLibrary, after[0], after[1], diffFilePath.replace(".txt", "_after.java"));
+
+                    if (!segment.removedCode.isEmpty() && !segment.addedCode.isEmpty())
+                        segments.add(segment);
                 }
             }
-            return hunks;
+            return segments;
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

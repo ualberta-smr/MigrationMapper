@@ -9,7 +9,7 @@ lib_def_dir = out_dir.joinpath("lib_defs")
 
 
 def lib_file_name(lib_spec: str):
-    return lib_spec.replace(">", ")").replace("<", "(") + ".json"
+    return lib_spec.replace(" ", "").replace(">", ")").replace("<", "(") + ".json"
 
 
 def get_lib_index_file_path(lib_spec: str):

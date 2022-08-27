@@ -40,18 +40,20 @@ def download(lib_spec: str):
 
 def generate_library_index(lib_folder: Path, lib_spec: str):
     visitor = LibCodeVisitor()
-    root_module_path: Path = None
+    root_module_paths: [Path] = []
     modules = []
+    errors = []
     for current_dir, dirs, files in os.walk(lib_folder):
         current_dir_path = Path(current_dir)
         for file in [f for f in files if f.endswith(".py")]:
             code_file_path = current_dir_path.joinpath(file)
             if file == "__init__.py":
-                if root_module_path:
-                    module = current_dir_path.relative_to(root_module_path.parent)
+                root_mp = [rmp for rmp in root_module_paths if rmp in current_dir_path.parents]
+                if root_mp:
+                    module = current_dir_path.relative_to(root_mp[0].parent)
                     modules.append(str(module).replace(os.sep, "."))
                 else:
-                    root_module_path = current_dir_path
+                    root_module_paths.append(current_dir_path)
                     modules.append(current_dir_path.name)
 
             with open(code_file_path, encoding="utf8") as code_file:
@@ -60,11 +62,12 @@ def generate_library_index(lib_folder: Path, lib_spec: str):
                     tree = ast.parse(code, filename=str(code_file_path))
                     visitor.visit(tree)
                 except SyntaxError as e:
-                    print(f"could not parse {code_file_path}", file=sys.stderr)
+                    errors.append(
+                        f"{e.args[0]}. {code_file_path.relative_to(lib_folder)}, line {e.lineno}-{e.end_lineno}, col {e.offset}-{e.end_offset}")
 
     output_path = get_lib_index_file_path(lib_spec)
 
-    results = {"modules": sorted(modules), "functions": sorted(visitor.functions)}
+    results = {"modules": sorted(modules), "functions": sorted(visitor.functions), "errors": errors}
     with open(output_path, "w") as out_file:
         out_file.writelines(json.dumps(results, indent=2))
 
