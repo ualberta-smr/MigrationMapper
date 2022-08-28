@@ -26,6 +26,9 @@ public class CleanPythonCode extends CleanCode {
                     String[] parts = line.split(" ");
                     String[] before = parts[1].substring(1).split(",");
                     String[] after = parts[2].substring(1).split(",");
+                    if (before.length < 2 || after.length < 2)
+                        continue;
+
                     segment = new Segment();
                     segment.removedCode = PythonHelper.getUsedFunctions(MigratedLibraries.fromLibrary, before[0], before[1], diffFilePath.replace(".txt", "_before.java"));
                     segment.addedCode = PythonHelper.getUsedFunctions(MigratedLibraries.toLibrary, after[0], after[1], diffFilePath.replace(".txt", "_after.java"));
