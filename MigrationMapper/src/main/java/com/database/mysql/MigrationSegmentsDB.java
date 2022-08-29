@@ -101,7 +101,7 @@ public class MigrationSegmentsDB {
 		for (MigrationSegments migrationSegments : listOfSegmnets) {
 			Segment segment = new Segment(migrationSegments);
 		 
-			String[] linesRemoved = migrationSegments.FromCode.split(System.getProperty("line.separator"));
+			String[] linesRemoved = migrationSegments.FromCode.split("\n");
 			segment.blockCode.add(String.valueOf(blockID++));
 			for (String line : linesRemoved) {
 				segment.removedCode.add(line);
@@ -109,7 +109,7 @@ public class MigrationSegmentsDB {
 			}
 
 			segment.blockCode.add("----------");
-			String[] linesAdded = migrationSegments.ToCode.split(System.getProperty("line.separator"));
+			String[] linesAdded = migrationSegments.ToCode.split("\n");
 			for (String line : linesAdded) {
 				segment.addedCode.add(line);
 				segment.blockCode.add(">  " + line);

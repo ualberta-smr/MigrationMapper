@@ -51,11 +51,10 @@ if __name__ == '__main__':
     try:
         with open(source_path) as source:
             tree = ast.parse(source.read())
+        visitor = FunctionCallVisitor(start_line, lines_count, all_lib_functions)
+        visitor.visit(tree)
+        for funcs in sorted(visitor.called_lib_functions):
+            print(funcs)
     except:
-        print("False")
-        exit(0)
-
-    visitor = FunctionCallVisitor(start_line, lines_count, all_lib_functions)
-    visitor.visit(tree)
-    for funcs in visitor.called_lib_functions:
-        print(funcs)
+        pass
+        # don't print anything
