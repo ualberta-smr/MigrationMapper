@@ -4,6 +4,7 @@ import os
 import sys
 from _ast import Call, Attribute, Subscript
 
+import ast_helper
 import path_helper
 
 
@@ -19,19 +20,10 @@ class FunctionCallVisitor(ast.NodeVisitor):
 
     def visit_Call(self, node: Call):
         if self.start_line <= node.lineno <= self.end_line:
-            name = self.func_name(node.func)
+            name = ast_helper.get_function_name(node)
             if name in self.all_lib_functions:
                 self.called_lib_functions.add(name)
         self.generic_visit(node)
-
-    def func_name(self, func):
-        if isinstance(func, Call):
-            func = func.func
-        elif isinstance(func, Subscript):
-            func = func.value
-        if hasattr(func, "attr"):
-            return func.attr
-        return func.id
 
 
 if __name__ == '__main__':

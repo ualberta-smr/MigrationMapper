@@ -9,8 +9,9 @@ from pathlib import Path
 from typing import Any
 from zipfile import ZipFile
 
+import ast_helper
 import path_helper
-from path_helper import pip_cmd, out_dir, exe_dir, get_lib_index_file_path
+from path_helper import pip_cmd, out_dir, get_lib_index_file_path
 
 
 def extract_path(text: str):
@@ -68,22 +69,23 @@ def generate_library_index(lib_folder: Path, lib_spec: str):
 
     output_path = get_lib_index_file_path(lib_spec)
 
-    results = {"modules": sorted(modules), "functions": sorted(visitor.functions), "errors": errors}
+    results = {"modules": modules, "functions": visitor.functions, "errors": errors}
     with open(output_path, "w") as out_file:
-        out_file.writelines(json.dumps(results, indent=2))
+        j_string = json.dumps(results, indent=2, sort_keys=True)
+        out_file.writelines(j_string)
 
     return output_path
 
 
 def download_archive(lib_spec):
-    result = subprocess.run([pip_cmd, 'download', lib_spec, "-d", out_dir, "--no-deps"],
+    result = subprocess.run([pip_cmd, 'download', lib_spec, "-d", path_helper.lib_code_dir, "--no-deps"],
                             stdout=subprocess.PIPE).stdout.decode("utf-8")
     archive_path = extract_path(result)
     return archive_path
 
 
 def extract_archive(archive_path: Path):
-    extracted_path = out_dir.joinpath(archive_path.stem)
+    extracted_path = path_helper.lib_code_dir.joinpath(archive_path.stem)
     if archive_path.suffix == ".gz":
         with tarfile.open(archive_path, "r:gz") as tar:
             tar.extractall(path=extracted_path)
@@ -96,21 +98,24 @@ def extract_archive(archive_path: Path):
 
 class LibCodeVisitor(ast.NodeVisitor):
     skip_prefix = ("_", "test_", "setup.py")
-    functions = set()
+    functions = {}
 
     def visit_FunctionDef(self, node: FunctionDef):
         func_name = node.name
         if not func_name.startswith(self.skip_prefix):
-            self.functions.add(func_name)
+            info = ast_helper.get_function_info(node)
+            self.functions[info["name"]] = info
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ClassDef) -> Any:
-        self.functions.add(node.name)
+        info = ast_helper.get_constructor_info(node)
+        if info:
+            self.functions[info["name"]] = info
+        self.generic_visit(node)
 
 
 if __name__ == '__main__':
+    # sys.argv.append("flask-restful == 0.3.7")
     library_spec = sys.argv[1]
-    # library_spec = "flask-restful == 0.3.7"
-    # library_spec = "pycrypto"
     out = download(library_spec)
     print(out)
