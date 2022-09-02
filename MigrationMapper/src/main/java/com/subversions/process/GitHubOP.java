@@ -148,7 +148,7 @@ public class GitHubOP {
     public void generateLogs(String appName) {
         try {
             System.out.println("==> Start generate logs for: " + appName);
-            String cmdStr = "git -C " + gitPath + " log --name-status  --reverse";
+            String cmdStr = "git -C " + gitPath + " log --all --name-status  --reverse -- \"*requirements.txt\"";
             runCommand(cmdStr, logFile);
             System.out.println("<== Complete generate logs");
 

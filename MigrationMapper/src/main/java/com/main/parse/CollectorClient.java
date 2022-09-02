@@ -5,15 +5,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.function.Function;
 //JDON.jar used to parse XML
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -30,6 +28,8 @@ import com.subversions.process.Commit;
 import com.subversions.process.CommitFiles;
 import com.subversions.process.GitRepositoryManager;
 import com.subversions.process.GitHubOP;
+
+import static com.main.parse.ValidPairSet.validPairSet;
 
 /**
  * This file responsible for collect all added and removed libraries in all
@@ -48,12 +48,10 @@ public class CollectorClient {
 
         AppSettings.loadAppSettings();
         new CollectorClient().startOnlineSearch();
-
     }
 
     // Search online for library migration
     void startOnlineSearch() throws IOException {
-
         // Created needed folder
         terminalCommand.createFolder("Clone");
 
@@ -165,17 +163,21 @@ public class CollectorClient {
         ArrayList<String> listOfRemovedLibrary = listOfChangedLibrary(previousVersionLibraries, versionLibraries);
         if (listOfRemovedLibrary.size() > 0) {
             for (String libraryName : listOfRemovedLibrary) {
-                System.err.println("Removed:" + libraryName);
-                new ProjectLibrariesDB().addProjectLibrary(projectID, commitID, libraryName, Operation.removed,
-                        pomPath);
+                if (validPairSet.isValidSource(libraryName)) {
+                    System.err.println("Removed:" + libraryName);
+                    new ProjectLibrariesDB().addProjectLibrary(projectID, commitID, libraryName, Operation.removed,
+                            pomPath);
+                }
             }
         }
         ArrayList<String> listOfAddedLibrary = listOfChangedLibrary(versionLibraries, previousVersionLibraries);
         if (listOfAddedLibrary.size() > 0) {
             for (String libraryName : listOfAddedLibrary) {
-                System.err.println("Added:" + libraryName);
-                new ProjectLibrariesDB().addProjectLibrary(projectID, commitID, libraryName, Operation.added,
-                        pomPath);
+                if (validPairSet.isValidTarget(libraryName)) {
+                    System.err.println("Added:" + libraryName);
+                    new ProjectLibrariesDB().addProjectLibrary(projectID, commitID, libraryName, Operation.added,
+                            pomPath);
+                }
             }
         }
 
@@ -259,7 +261,7 @@ public class CollectorClient {
         }
 //	    // delete folder if isnot real app folder this missing gradle folder
 //	    if(versionLibraries=="" && projectVersionPath.length()>0){
-// 
+//
 //			try{
 //				String cmdStr=" rm -rf "+ projectVersionPath;
 //				Process p = Runtime.getRuntime().exec(new String[]{"bash","-c",cmdStr});
@@ -381,7 +383,7 @@ public class CollectorClient {
                 continue;
             }
             line = line.split("#")[0].trim();
-            versionLibraries.append("," + line.toLowerCase().replace('_', '-'));
+            versionLibraries.append("," + PythonHelper.normalizeLibrarySpec(line));
         }
         if (versionLibraries.toString().isEmpty())
             return "";

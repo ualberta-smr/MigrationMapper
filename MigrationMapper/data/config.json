@@ -8,5 +8,6 @@
          "developerToken": "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"
     },
     "projectType": "python",
-    "pythonCmd": ".venv/Scripts/python.exe"
+    "pythonCmd": ".venv/Scripts/python.exe",
+    "usePredefinedLibraryPairs": true
 }

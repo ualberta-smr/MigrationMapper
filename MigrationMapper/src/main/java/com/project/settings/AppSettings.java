@@ -16,6 +16,13 @@ public class AppSettings {
     public static boolean isUsingLD = true; // set if our search using library doumenation or not
     public static String pythonCmd;
 
+    /**
+     * if the value is true, should have a data/validPairs.csv file having two columns. First column is source library
+     * and the second column is target library. The process will only consider the library pairs mentioned in this file.
+     * This works only for Python projects
+     */
+    public static boolean usePredefinedLibraryPairs;
+
     public static boolean isPython() {
         return projectType == ProjectType.PYTHON;
     }
@@ -32,6 +39,7 @@ public class AppSettings {
             projectType = getProjectType(obj);
             codeFileSuffix = isPython() ? ".py" : ".java";
             pythonCmd = obj.getString("pythonCmd");
+            usePredefinedLibraryPairs = obj.getBoolean("usePredefinedLibraryPairs");
             DatabaseLogin.url = dbConnectionobj.getString("url");
             DatabaseLogin.username = dbConnectionobj.getString("userName");
             DatabaseLogin.password = dbConnectionobj.getString("password");

@@ -3,6 +3,9 @@ import os
 import sys
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("no options provided. using `runserver`.")
+        sys.argv.append("runserver")
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pages_project.settings')
     try:
         from django.core.management import execute_from_command_line

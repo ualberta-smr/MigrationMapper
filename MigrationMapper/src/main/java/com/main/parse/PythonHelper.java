@@ -67,10 +67,8 @@ public class PythonHelper {
     }
 
     public static Path libraryRootPath(String[] libSpec) {
-        String libName = libSpec[0].replaceAll("\\[.*\\]", "") // from sentry-sdk[flask] to sentry-sdk
+        String libFolderName = normalizeLibSpecRemovingBrackets(libSpec[0])
                 .replace('-', '_'); // the folder names use underscore instead of hyphen
-
-        String libFolderName = libName;
         if (libSpec.length > 1)
             libFolderName += "-" + libSpec[2];
 
@@ -96,5 +94,16 @@ public class PythonHelper {
     public static String getLibIndexPath(String libraryInfo) {
         String[] results = runPython("getLibIndexPath.py", true, libraryInfo);
         return results[0];
+    }
+
+    public static String normalizeLibrarySpec(String librarySpec) {
+        return librarySpec.trim().toLowerCase().replace('_', '-');
+    }
+
+    public static String normalizeLibSpecRemovingBrackets(String librarySpec) {
+        String normal = librarySpec.trim().toLowerCase().replace('_', '-');
+        String bracketRemoved = normal.replaceAll("\\[.*\\]", ""); // from sentry-sdk[flask] to sentry-sdk;
+
+        return bracketRemoved;
     }
 }
