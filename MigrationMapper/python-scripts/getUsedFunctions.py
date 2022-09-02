@@ -22,17 +22,19 @@ class FunctionCallVisitor(ast.NodeVisitor):
         if self.start_line <= node.lineno <= self.end_line:
             name = ast_helper.get_function_name(node)
             if name in self.all_lib_functions:
-                self.called_lib_functions.add(name)
+                func_info = self.all_lib_functions[name]
+                self.called_lib_functions.add(func_info["signature"])
         self.generic_visit(node)
 
 
 if __name__ == '__main__':
-    # sys.argv += [
-    #     "raven==6.10.0",
-    #     "../Clone/Diffs/1/v2274_d10cb162447d9e3a9506b76054851863b10ff27a/diff_middleware.py_before.java",
-    #     "312",
-    #     "8"
-    # ]
+
+    sys.argv += [
+        "raven==6.10.0",
+        "../Clone/sipa/sipa/initialization.py",
+        "1",
+        "1000"
+    ]
 
     lib_spec, source_path, start_line, lines_count = sys.argv[1:5]
     lib_path = path_helper.get_lib_index_file_path(lib_spec)

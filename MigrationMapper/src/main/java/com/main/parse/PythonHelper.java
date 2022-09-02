@@ -16,11 +16,10 @@ public class PythonHelper {
 
     public static String[] runPython(String scriptName, boolean cache, String... arguments) {
         String scriptPath = Paths.get("python-scripts", scriptName).toString();
-        String cacheKey = scriptPath + " " + arguments;
+        String cacheKey = scriptPath + " " + String.join(" ", arguments);
         if (cache && pythonCache.containsKey(cacheKey))
             return pythonCache.get(cacheKey);
 
-        Process process;
         List<String> cmds = new ArrayList<>();
         Collections.addAll(cmds, AppSettings.pythonCmd, scriptPath);
         Collections.addAll(cmds, arguments);
@@ -52,6 +51,8 @@ public class PythonHelper {
     }
 
     public static String[] getLibSpec(String requirementLine) {
+        if (!requirementLine.matches(".*\\d.*"))
+            return new String[]{requirementLine, "", ""};
         return runPython("readRequirement.py", true, requirementLine);
     }
 
@@ -90,5 +91,10 @@ public class PythonHelper {
     public static ArrayList<String> getUsedFunctions(String librarySpecStr, String startLine, String linesCount, String sourceFile) {
         String[] funcs = runPython("getUsedFunctions.py", true, librarySpecStr, sourceFile, startLine, linesCount);
         return new ArrayList<>(Arrays.asList(funcs));
+    }
+
+    public static String getLibIndexPath(String libraryInfo) {
+        String[] results = runPython("getLibIndexPath.py", true, libraryInfo);
+        return results[0];
     }
 }

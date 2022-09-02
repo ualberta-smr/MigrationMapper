@@ -74,10 +74,11 @@ public class DetectorClient {
         // 1- Search for migration using library changes in pom file
         // *********************************************************************
 
+        var ruleTotal = migrationRules.size();
+        var ruleInProgress = 0;
         for (MigrationRule migrationRule : migrationRules) {
             System.out.println("===========================");
-            System.out.println("==> Start search for migration rule " + migrationRule.FromLibrary + "<==> "
-                    + migrationRule.ToLibrary);
+            System.out.printf("==> Detect rule %d/%d: %s <==> %s \n", ++ruleInProgress, ruleTotal, migrationRule.FromLibrary, migrationRule.ToLibrary);
             System.out.println("===========================");
             MigratedLibraries.ID = migrationRule.ID;
 
@@ -89,8 +90,10 @@ public class DetectorClient {
             // boolean exitSearch=false;
             // collect all the segments that found in all the projects for specific rule
             ArrayList<Segment> segmentList = new ArrayList<Segment>();
+            var plTotal = listOfProjectLibraries.size();
+            var plInProgress = 0;
             for (Project project : listOfProjectLibraries) {
-
+                System.out.printf("rule %d/%d  project library %d/%d\n", ruleInProgress, ruleTotal, ++plInProgress, plTotal);
                 // if(currentProjectSearch>15){
                 // break; //Go check next rule
                 // }
@@ -162,7 +165,7 @@ public class DetectorClient {
                                 String previousCommitID = appCommitsDB.previousCommitID(project.ProjectID, oldcommitID);
                                 if (previousCommitID.length() > 0) {
                                     System.out.println("-----------------\n" + currentProjectsID
-                                            + "- Fing migration\nCommit from :" + previousCommitID + "==> "
+                                            + "- Find migration\nCommit from :" + previousCommitID + "==> "
                                             + oldcommitID + "\nLibrary from: " + MigratedLibraries.fromLibrary + "==> "
                                             + MigratedLibraries.toLibrary + "\nAppLink: " + appLink);
 
@@ -398,7 +401,7 @@ public class DetectorClient {
             System.out.print("Detect change in " + changedFilePath);
             String newUpdatedFilePath = pathClone + migrateAtCommitName + "/" + changedFilePath;
             String oldFilePath = pathClone + previousCommitName + "/" + changedFilePath;
-            outputDiffFilePath = Paths.get(outputDiffsPath, "diff_" + chnagedFileName + ".txt").toString() ;
+            outputDiffFilePath = Paths.get(outputDiffsPath, "diff_" + chnagedFileName + ".txt").toString();
             // Make sure the file has call from old function before update and call from new
             // library after update
             if (cleanCode.isUsedNewLibrary(oldFilePath, MigratedLibraries.fromLibrary)

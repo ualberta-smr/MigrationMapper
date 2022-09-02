@@ -115,7 +115,7 @@ class LibCodeVisitor(ast.NodeVisitor):
 
 
 if __name__ == '__main__':
-    # sys.argv.append("flask-restful == 0.3.7")
+    sys.argv.append("flask-restful == 0.3.7")
     library_spec = sys.argv[1]
     out = download(library_spec)
     print(out)

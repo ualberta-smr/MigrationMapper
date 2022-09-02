@@ -57,8 +57,10 @@ public class NLPWebService {
 
 		try {
 			String query = "http://127.0.0.1:8000/nlp/";
-			String json = "{\"text1\":\"" + text1.replaceAll("\n", " ").replaceAll("\"", " ") + "\",\"text2\":\""
-					+ text2.replaceAll("\n", " ").replaceAll("\"", " ") + "\"}";
+			JSONObject json = new JSONObject();
+			json.put("text1", text1);
+			json.put("text2", text2);
+
 			// System.out.println(json);
 			URL url = new URL(query);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -69,7 +71,9 @@ public class NLPWebService {
 			conn.setRequestMethod("POST");
 
 			OutputStream os = conn.getOutputStream();
-			os.write(json.getBytes("UTF-8"));
+			String s = json.toString();
+			System.out.println(s);
+			os.write(s.getBytes("UTF-8"));
 			os.close();
 
 			// read the response

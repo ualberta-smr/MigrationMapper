@@ -2,21 +2,25 @@ import ast
 from _ast import FunctionDef, ClassDef, Call, Subscript, AST
 
 
-def _function_info(name: str, signature: str, doc: str):
+def _function_info(name: str, function_def: FunctionDef, doc: str, class_name: str):
+    # the returned object should have the same properties as MethodDocs class in the Java code
+
+    args = ', '.join(arg.arg for arg in function_def.args.args)
+    return_type = "object"
+    signature = f"{return_type} {name}({args})"
     return {
         "name": name,
-        "signature": signature,
-        "doc": doc
+        "fullName": signature,  # actually the full signature,
+        "description": doc or "",  # the doc
+        "returnParams": return_type,  # the return type
+        "inputParams": args,
+        "ClassName": class_name,
+        "PackageName": "",
     }
 
 
-def _function_signature(name: str, function_def: FunctionDef):
-    return f"object {name}({','.join([arg.arg for arg in function_def.args.args])})"
-
-
 def get_function_info(function_def: FunctionDef) -> dict:
-    return _function_info(function_def.name, _function_signature(function_def.name, function_def),
-                          ast.get_docstring(function_def))
+    return _function_info(function_def.name, function_def, ast.get_docstring(function_def), "")
 
 
 def get_constructor_info(class_def: ClassDef) -> dict | None:
@@ -25,7 +29,7 @@ def get_constructor_info(class_def: ClassDef) -> dict | None:
         return None
 
     doc = f"{ast.get_docstring(class_def)}\n\n{ast.get_docstring(init)}"
-    return _function_info(class_def.name, _function_signature(class_def.name, init), doc)
+    return _function_info(class_def.name, init, doc, class_def.name)
 
 
 def get_function_name(call: Call):
