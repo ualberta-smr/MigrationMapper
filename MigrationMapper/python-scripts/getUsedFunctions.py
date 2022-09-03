@@ -50,6 +50,4 @@ if __name__ == '__main__':
         for funcs in sorted(visitor.called_lib_functions):
             print(funcs)
     except Exception as e:
-        print(e)
-        pass
-        # don't print anything
+        print(e, file=sys.stderr)
