@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.main.parse.PythonHelper;
+import com.main.parse.ValidPairSet;
 import com.project.settings.AppSettings;
 import com.project.settings.ProjectType;
 
@@ -44,9 +45,15 @@ public class CartesianProduct {
                 // Remove Version index
                 project2.LibraryName = libraryWithoutVersion(project2.LibraryName);
                 project1.LibraryName = libraryWithoutVersion(project1.LibraryName);
+
                 if (project1.LibraryName.isEmpty() || project2.LibraryName.isEmpty())
                     continue;
                 CPObject cPObject = new CPObject(project2.LibraryName, project1.LibraryName);
+
+                if (!ValidPairSet.validPairSet.isValidPair(cPObject.value1, cPObject.value2)) {
+                    continue;
+                }
+
                 int index = cPObject.isFoundUnique(listOfProjectLibrariesCP);
                 if (index != -1) {
                     // is found
