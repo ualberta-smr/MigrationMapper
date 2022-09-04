@@ -21,7 +21,6 @@ public class GitHubOP {
 
 
     int commitNumber;
-    public static String gitUserInfo = GithubLogin.userName;
     public static String pathCloneTest = Paths.get(".").toAbsolutePath().normalize().toString() + "/Clone/";
     Operations operations = new Operations();
     CollectorClient projectLibrary = new CollectorClient();
@@ -63,14 +62,15 @@ public class GitHubOP {
     }
 
     public String addGitUserLogin(String appURL) {
+        return appURL;
         // Print the content on the console
-        String[] split = appURL.split("//");
-        if (split.length < 2) {
-            System.err.println("Git url isnot correct: " + appURL);
-            return "";
-        }
-        // System.out.println ();
-        return (split[0] + "//" + gitUserInfo + "@" + split[1]);
+//        String[] split = appURL.split("//");
+//        if (split.length < 2) {
+//            System.err.println("Git url isnot correct: " + appURL);
+//            return "";
+//        }
+//        // System.out.println ();
+//        return (split[0] + "//" + gitUserInfo + "@" + split[1]);
     }
 
     // clone the link in machine
@@ -78,9 +78,8 @@ public class GitHubOP {
         try {
             String appLinkLogin = addGitUserLogin(appURL);
             System.out.println("==> Start cloning: " + appLinkLogin);
-            String cmdStr = "git clone " + appLinkLogin + " " + gitPath;
-            Process p = Runtime.getRuntime().exec(cmdStr);
-            p.waitFor();
+            new ProcessBuilder("git", "clone", appLinkLogin, gitPath)
+                    .inheritIO().start().waitFor();
             System.out.println("<== Complete clone");
 
         } catch (Exception e) {
@@ -187,18 +186,13 @@ public class GitHubOP {
 
     // checkout repo
     public void gitCheckout(String commitID) {
-
         if (commitID.contains("_")) {
             String[] commitIDSP = commitID.split("_");
             commitID = commitIDSP[1];
         }
         try {
-            System.out.println("==> Start checkout: " + commitID);
-            String cmdStr = "git -C " + gitPath + " checkout " + commitID;
-            Process p = Runtime.getRuntime().exec(cmdStr);
-            p.waitFor();
-            System.out.println("<== Complete checkout");
-
+            new ProcessBuilder("git", "-C", gitPath, "checkout", commitID)
+                    .inheritIO().start().waitFor();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

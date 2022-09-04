@@ -44,13 +44,8 @@ public class AppSettings {
             DatabaseLogin.username = dbConnectionobj.getString("userName");
             DatabaseLogin.password = dbConnectionobj.getString("password");
 
-            JSONObject githubConnectionobj = obj.getJSONObject("githubConnection");
-            GithubLogin.userName = githubConnectionobj.getString("developerToken");
-
-
             if (DatabaseLogin.username.contentEquals("Add user name here") ||
-                    DatabaseLogin.password.contentEquals("Add password here") ||
-                    GithubLogin.userName.contentEquals("Add Github developer kep here")) {
+                    DatabaseLogin.password.contentEquals("Add password here")) {
                 System.err.println(" The database and github info in config.json didnot setup correctly yet. Please set up the correct information and rerun the tool");
 
             } else {
@@ -58,7 +53,6 @@ public class AppSettings {
                 System.out.println("DatabaseLogin.url =" + DatabaseLogin.url);
                 System.out.println("DatabaseLogin.username =" + DatabaseLogin.username);
                 System.out.println("DatabaseLogin.password =" + DatabaseLogin.password);
-                System.out.println("GithubLogin.userName =" + GithubLogin.userName);
                 System.out.println("==========================");
             }
 

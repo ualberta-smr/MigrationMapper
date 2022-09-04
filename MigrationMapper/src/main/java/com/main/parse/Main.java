@@ -14,9 +14,9 @@ public class Main {
 		AppSettings.loadAppSettings();  // load database and github settings
 
 		// 1 Collection
-		//new CollectorClient().startOnlineSearch();
+		new CollectorClient().startOnlineSearch();
 		// 2- Find migration rule
-		//new MigrationRulesClient().start();
+		new MigrationRulesClient().start();
 		// 3- Find code segments
 		new DetectorClient().start();
 		// 4- Collect Docs

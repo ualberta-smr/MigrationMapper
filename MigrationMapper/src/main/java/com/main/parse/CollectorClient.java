@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -372,7 +373,18 @@ public class CollectorClient {
         }
         if (!path.toFile().exists())
             return "";
-        List<String> lines = Files.readAllLines(path);
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+        } catch (MalformedInputException e) {
+            lines = Files.readAllLines(path, StandardCharsets.UTF_16);
+        } catch (Exception e) {
+            System.err.println(path);
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
         if (lines.isEmpty())
             return "";
 

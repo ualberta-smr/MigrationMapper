@@ -106,4 +106,19 @@ public class PythonHelper {
 
         return bracketRemoved;
     }
+
+    /**
+     * See https://pip.pypa.io/en/stable/reference/requirement-specifiers/
+     *
+     * @param libSpec
+     * @return
+     */
+    public static String[] parseLibSpec(String libSpec) {
+        libSpec = libSpec.split(";")[0];
+        var parts = libSpec.split("(~=|==|!=|<=|>=|<|>|===)");
+        if (parts.length == 1)
+            parts = new String[]{parts[0], "", ""};
+
+        return parts;
+    }
 }
