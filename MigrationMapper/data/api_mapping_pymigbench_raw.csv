@@ -1,0 +1,93 @@
+source lib,target lib,source API,target API
+argparse,configargparse,ArgumentParser,ArgParser
+argparse,configargparse,add_argument,add_argument
+dataproperty,typepy,is_not_empty_string|is_empty_sequence,is_not_null_string|is_empty_sequence
+dataproperty,typepy,is_empty_string|is_empty_sequence,is_null_string|is_empty_sequence
+dataproperty,typepy,is_not_empty_string|is_empty_string|IntegerType|try_convert,is_not_null_string|is_null_string|Integer|convert
+dataproperty,typepy,DataProperty,"DateTime, convert"
+eventlet,gevent,monkey_patch,patch_all
+flask-restful,flask-restplus,"Blueprint, Api",Namespace
+flask,fastapi,Flask,FastAPI
+flask,quart,render_template,render_template
+flask,quart,Flask,Quart
+flask,quart,get_json,get_json
+flask,quart,Flask,Quart
+flask,quart,Flask,Quart
+flask,quart,abort|jsonify|make_response,abort|jsonify|make_response
+flask,quart,flash|render_template,flash|render_template
+flask,quart,Flask,Quart
+flask,quart,Flask,Quart
+flask,quart,,
+flask,quart,Blueprint|abort|jsonify,Blueprint|abort|jsonify
+flask,quart,Blueprint|Response,Blueprint|Response
+flask,quart,Flask,Quart
+flask,uvicorn,"Flask,run",run
+gcloud-aio-core,aiohttp,post,"ClientSession, post, json"
+gcloud-aio-core,aiohttp,post,"ClientSession, post, json"
+gevent,eventlet,patch_all,monkey_patch
+gevent,eventlet,"WSGIServer, serve_forever","server, listen"
+gevent,eventlet,patch_all,monkey_patch
+kafka-python,confluent-kafka,KafkaConsumer|KafkaProducer,Consumer|Producer
+kafka-python,confluent-kafka,get_kafka_consumer,"Consumer, suscribe"
+kafka-python,confluent-kafka,KafkaProducer,Producer
+kafka-python,confluent-kafka,send,produce
+lockfile,fasteners,LockFile,InterProcessLock
+lockfile,fasteners,acquire,acquire
+lockfile,fasteners,LockFile,InterProcessLock
+lockfile,fasteners,acquire,acquire
+lockfile,fasteners,acquire,acquire
+lockfile,fasteners,LockFile,InterProcessLock
+lockfile,fasteners,acquire,acquire
+lockfile,fasteners,LockFile,InterProcessLock
+lockfile,fasteners,acquire,acquire
+lockfile,fasteners,LockFile,InterProcessLock
+logbook,loguru,"Logger, disable",disable
+logbook,loguru,"Logger, enable",enable
+openpyxl,xlsxwriter,create_sheet,add_worksheet
+py-bcrypt,bcrypt,checkpw,checkpw
+pycrypto,pycryptodome,new,new
+pycrypto,pycryptodome,loads,loads
+pycrypto,pycryptodome,new,new
+pycrypto,pycryptodome,encrypt,encrypt_and_digest
+pycrypto,pycryptodome,encrypt,encrypt
+pycryptodome,pycryptodomex,"bytes_to_long, long_to_bytes, new","bytes_to_long, long_to_bytes, new"
+pycryptodome,pycryptodomex,"new, get_random_bytes, importKey","new, get_random_bytes, importKey"
+pymilvus-orm,pymilvus,drop,drop_collection
+pyqt5,pyside6,exec_,exec
+pyqt5,pyside6,start,start
+pyqt5,pyside6,exec_,exec
+pyqt5,pyside6,exec_,exec
+pyqt5,pyside6,pos,position
+pyqt5,pyside6,pos,"position,toPoint"
+python-ldap,ldap3,initialize,Server
+python-ldap,ldap3,search_s,search
+raven,sentry-sdk,Sentry,init
+raven,sentry-sdk,captureException,capture_exception
+raven,sentry-sdk,log_exc,capture_exception
+raven,sentry-sdk,environ,capture_message
+raven,sentry-sdk,"Sentry,init_app",init
+raven,sentry-sdk,Client,init
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,json,json
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,json,json
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,json,json
+requests,aiohttp,get,"ClientSession, get"
+requests,aiohttp,text,text
+requests,aiohttp,get,get
+requests,aiohttp,post,post
+requests,aiohttp,json,json
+ruamel.yaml,pyyaml,load,safe_load
+ruamel.yaml,pyyaml,load,safe_load
+ruamel.yaml,pyyaml,load,safe_load
+ruamel.yaml,pyyaml,load,safe_load
+ruamel.yaml,pyyaml,dump,safe_dump
+ruamel.yaml,pyyaml,dump,safe_dump
+ruamel.yaml,pyyaml,load,safe_load
+ruamel.yaml,pyyaml,dump,safe_dump
+slackclient,slack-sdk,"RTMClient, WebClient","RTMClient, WebClient"
+slackclient,slack-sdk,RTMClient,RTMClient
+xlsxwriter,openpyxl,add_worksheet,create_sheet
