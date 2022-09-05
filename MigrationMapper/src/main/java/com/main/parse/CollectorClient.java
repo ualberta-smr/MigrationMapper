@@ -12,7 +12,6 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 //JDON.jar used to parse XML
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -85,7 +84,7 @@ public class CollectorClient {
             // if (gitHubOP.isPageExisit(appURL+"/blob/master/pom.xml")){
             gitHubOP.cloneApp();
 
-            gitHubOP.generateLogs(LOG_FILE_NAME);
+            gitHubOP.generateLogs(LOG_FILE_NAME, true);
             // save commit info in database
             ArrayList<Commit> commitList = gitHubOP.readLogFile(
                     ProjectBuildFile.getType());

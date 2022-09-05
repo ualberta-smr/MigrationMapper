@@ -29,7 +29,7 @@ import com.subversions.process.GitHubOP;
  */
 public class DetectorClient {
     String LOG_FILE_NAME = "app_commits.txt";
-    static String pathClone = Paths.get(".").toAbsolutePath().normalize().toString() + "/Clone/Process/";
+    static String pathClone = Paths.get(".").toAbsolutePath().normalize().toString() + "/Clone/_Process/";
     String pathToSaveJAVALibrary = "/librariesClasses/jar";
     TerminalCommand terminalCommand = new TerminalCommand();
     CleanCode cleanCode;
@@ -77,9 +77,7 @@ public class DetectorClient {
         var ruleTotal = migrationRules.size();
         var ruleInProgress = 0;
         for (MigrationRule migrationRule : migrationRules) {
-            System.out.println("===========================");
             System.out.printf("==> Detect rule %d/%d: %s <==> %s \n", ++ruleInProgress, ruleTotal, migrationRule.FromLibrary, migrationRule.ToLibrary);
-            System.out.println("===========================");
             MigratedLibraries.ID = migrationRule.ID;
 
             // get one vaild library signature to use it in self-admitted
@@ -93,7 +91,7 @@ public class DetectorClient {
             var plTotal = listOfProjectLibraries.size();
             var plInProgress = 0;
             for (Project project : listOfProjectLibraries) {
-                System.out.printf("rule %d/%d  project library %d/%d\n", ruleInProgress, ruleTotal, ++plInProgress, plTotal);
+                ++plInProgress;
                 // if(currentProjectSearch>15){
                 // break; //Go check next rule
                 // }
@@ -122,6 +120,7 @@ public class DetectorClient {
                 // *********************************************************************
                 // if new commit there we need to generate the CP for libraries changed
                 if (oldcommitID.equals(newcommitID) == false) {
+                    System.out.printf("rule %d/%d  project library %d/%d (id=%d)\n", ruleInProgress, ruleTotal, plInProgress, plTotal, project.ProjectID);
 
                     // he may be only added new library but didnot remove old library
                     if (listOfAddedLibraries.size() > 0 || listOfRemovedLibraries.size() > 0) {
@@ -164,6 +163,9 @@ public class DetectorClient {
 
                                 String previousCommitID = appCommitsDB.previousCommitID(project.ProjectID, oldcommitID);
                                 if (previousCommitID.length() > 0) {
+                                    if (appLink == null || appLink.isEmpty())
+                                        continue;
+
                                     System.out.println("-----------------\n" + currentProjectsID
                                             + "- Find migration\nCommit from :" + previousCommitID + "==> "
                                             + oldcommitID + "\nLibrary from: " + MigratedLibraries.fromLibrary + "==> "
@@ -283,6 +285,8 @@ public class DetectorClient {
 
         for (AppCommit appCommit : listOfAppsCommit) {
             String appLink = new RepositoriesDB().getRepositoriesLink(appCommit.AppID);
+            if (appLink == null || appLink.isEmpty())
+                continue;
             String previousCommitID = appCommitsDB.previousCommitID(appCommit.AppID, appCommit.CommitID);
             if (previousCommitID.length() > 0) {
                 System.out.println(
@@ -315,6 +319,7 @@ public class DetectorClient {
         ArrayList<Segment> segmentList = new ArrayList<Segment>();
         // list of changed files
         ArrayList<String> listOfChangedFiles = cloneMigratedCommits(appURL, previousCommitName, migrateAtCommitName);
+        System.out.printf("%d changed files\n", listOfChangedFiles.size());
         if (listOfChangedFiles.size() > 0) {
             String outputDiffsPath = Paths.get("Clone/Diffs", MigratedLibraries.ID + "", migrateAtCommitName).toAbsolutePath().toString();
             // list of changed cleaned files
@@ -360,7 +365,7 @@ public class DetectorClient {
             gitHubOP.deleteFolder(pathClone); // clear folder from prevous project process
             terminalCommand.createFolder(pathClone);
             gitHubOP.cloneApp();
-            gitHubOP.generateLogs(LOG_FILE_NAME);
+            gitHubOP.generateLogs(LOG_FILE_NAME, false);
         }
         // get list of change files
         listOfChangedFiles = gitHubOP.getlistOfChangedFiles(migrateAtCommitName);
@@ -390,15 +395,17 @@ public class DetectorClient {
     ArrayList<String> generateFragments(ArrayList<String> listOfChangedFiles, String previousCommitName,
                                         String migrateAtCommitName, String outputDiffsPath, String appURL) {
 
+        System.out.println("Generating fragments");
         // list of diffs files path
         ArrayList<String> diffsFilePath = new ArrayList<String>();
         boolean isDiffFolderCreated = false;
         // generate diffs
         String outputDiffFilePath = "";
+        var i = 0;
         for (String changedFilePath : listOfChangedFiles) {
+            System.out.printf("File %d of %d: %s\n", ++i, listOfChangedFiles.size(), changedFilePath);
             String changedFilePathSplit[] = changedFilePath.split("/");
             String chnagedFileName = changedFilePathSplit[changedFilePathSplit.length - 1];
-            System.out.print("Detect change in " + changedFilePath);
             String newUpdatedFilePath = pathClone + migrateAtCommitName + "/" + changedFilePath;
             String oldFilePath = pathClone + previousCommitName + "/" + changedFilePath;
             outputDiffFilePath = Paths.get(outputDiffsPath, "diff_" + chnagedFileName + ".txt").toString();

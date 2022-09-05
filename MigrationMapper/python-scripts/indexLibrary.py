@@ -59,13 +59,15 @@ def generate_library_index(lib_folder: Path, lib_spec: str):
                     modules.append(current_dir_path.name)
 
             with open(code_file_path, encoding="utf8") as code_file:
-                code = code_file.read()
                 try:
+                    code = code_file.read()
                     tree = ast.parse(code, filename=str(code_file_path))
                     visitor.visit(tree)
                 except SyntaxError as e:
                     errors.append(
                         f"{e.args[0]}. {code_file_path.relative_to(lib_folder)}, line {e.lineno}-{e.end_lineno}, col {e.offset}-{e.end_offset}")
+                except UnicodeDecodeError as e:
+                    errors.append(str(e))
 
     output_path = get_lib_index_file_path(lib_spec)
 
@@ -115,7 +117,7 @@ class LibCodeVisitor(ast.NodeVisitor):
 
 
 if __name__ == '__main__':
-    sys.argv.append("flask-restful == 0.3.7")
+    # sys.argv.append("gevent==20.6.2")
     library_spec = sys.argv[1]
     out = download(library_spec)
     print(out)

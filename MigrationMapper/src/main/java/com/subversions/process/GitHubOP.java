@@ -144,10 +144,12 @@ public class GitHubOP {
     }
 
     // clone the link in machine
-    public void generateLogs(String appName) {
+    public void generateLogs(String appName, boolean requirementOnly) {
         try {
             System.out.println("==> Start generate logs for: " + appName);
-            String cmdStr = "git -C " + gitPath + " log --all --name-status  --reverse -- \"*requirements.txt\"";
+            String cmdStr = "git -C " + gitPath + " log --name-status --all --reverse";
+            if (requirementOnly && AppSettings.isPython())
+                cmdStr += " -- \"*requirements.txt\"";
             runCommand(cmdStr, logFile);
             System.out.println("<== Complete generate logs");
 
@@ -388,6 +390,7 @@ public class GitHubOP {
 
     // get list of changed files at specific commit
     public ArrayList<String> getlistOfChangedFiles(String commitID) {
+        System.out.println("Finding changed files in " + commitID);
         commitID = getCommitID(commitID);
         ArrayList<String> listOfChangedFiles = new ArrayList<String>();
         try {
@@ -414,7 +417,7 @@ public class GitHubOP {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return listOfChangedFiles;

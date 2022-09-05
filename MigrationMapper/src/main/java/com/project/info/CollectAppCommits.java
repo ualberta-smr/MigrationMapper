@@ -18,7 +18,7 @@ public class CollectAppCommits {
 			GitHubOP gitHubOP = new GitHubOP(repository.AppLink, pathClone);
 			gitHubOP.cloneApp();
 			String LOG_FILE_NAME = repository.AppID + "_commits.txt";
-			gitHubOP.generateLogs(LOG_FILE_NAME);
+			gitHubOP.generateLogs(LOG_FILE_NAME, false);
 			// save commit info in database
 			// ArrayList<Commit> commitList= gitHubOP.readLogFile(pathClone +
 			// LOG_FILE_NAME);

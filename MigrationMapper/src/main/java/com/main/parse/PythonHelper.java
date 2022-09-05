@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class PythonHelper {
@@ -33,13 +34,14 @@ public class PythonHelper {
     private static String[] runCommand(String... cmds) {
         Process process;
         try {
-            process = Runtime.getRuntime().exec(cmds);
-            process.waitFor();
-            // process.waitFor(0, TimeUnit.MINUTES);
+            process = new ProcessBuilder(cmds).start();
+            process.waitFor(5, TimeUnit.MINUTES);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+        if (process.isAlive()) {
+            return new String[]{"False"};
+        }
         if (process.exitValue() != 0) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String error = reader.lines().collect(Collectors.joining("\n"));
