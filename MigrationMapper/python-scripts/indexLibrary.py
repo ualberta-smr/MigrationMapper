@@ -59,13 +59,14 @@ def generate_library_index(lib_folder: Path, lib_spec: str):
                     modules.append(current_dir_path.name)
 
             with open(code_file_path, encoding="utf8") as code_file:
+                relative_code_path = code_file_path.relative_to(lib_folder)
                 try:
                     code = code_file.read()
                     tree = ast.parse(code, filename=str(code_file_path))
-                    visitor.visit(tree)
+                    visitor.start_visit(tree, relative_code_path)
                 except SyntaxError as e:
                     errors.append(
-                        f"{e.args[0]}. {code_file_path.relative_to(lib_folder)}, line {e.lineno}-{e.end_lineno}, col {e.offset}-{e.end_offset}")
+                        f"{e.args[0]}. {relative_code_path}, line {e.lineno}-{e.end_lineno}, col {e.offset}-{e.end_offset}")
                 except UnicodeDecodeError as e:
                     errors.append(str(e))
 
@@ -99,25 +100,34 @@ def extract_archive(archive_path: Path):
 
 
 class LibCodeVisitor(ast.NodeVisitor):
-    skip_prefix = ("_", "test_", "setup.py")
     functions = {}
+    current_file = None
 
-    def visit_FunctionDef(self, node: FunctionDef):
-        func_name = node.name
-        if not func_name.startswith(self.skip_prefix):
-            info = ast_helper.get_function_info(node)
-            self.functions[info["name"]] = info
-        self.generic_visit(node)
+    def start_visit(self, tree, file: Path):
+        self.current_file = file
+        self.visit(tree)
 
-    def visit_ClassDef(self, node: ClassDef) -> Any:
-        info = ast_helper.get_constructor_info(node)
+    def visit_FunctionDef(self, func: FunctionDef):
+        if func.name not in self.functions:
+            self.process_function(func)
+        else:
+            pass
+        self.generic_visit(func)
+
+    def visit_ClassDef(self, cls: ClassDef) -> Any:
+        for child in cls.body:
+            if isinstance(child, FunctionDef):
+                self.process_function(child, cls)
+        self.generic_visit(cls)
+
+    def process_function(self, func: FunctionDef, cls: ClassDef = None):
+        info = ast_helper.get_function_info(self.current_file, func, cls)
         if info:
             self.functions[info["name"]] = info
-        self.generic_visit(node)
 
 
 if __name__ == '__main__':
-    # sys.argv.append("gevent==20.6.2")
+    sys.argv.append("flask")
     library_spec = sys.argv[1]
     out = download(library_spec)
     print(out)

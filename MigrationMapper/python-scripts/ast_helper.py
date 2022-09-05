@@ -1,35 +1,39 @@
 import ast
-from _ast import FunctionDef, ClassDef, Call, Subscript, AST
+from _ast import FunctionDef, ClassDef, Call, Subscript
+from pathlib import Path
+
+skip_prefix = ("_", "test_")
 
 
-def _function_info(name: str, function_def: FunctionDef, doc: str, class_name: str):
+def get_function_info(current_file: Path, function_def: FunctionDef, class_def: ClassDef = None) -> dict | None:
+    actual_func_name = function_def.name
+
+    if class_def and actual_func_name == "__init__":
+        applied_func_name = class_def.name
+        doc = f"{ast.get_docstring(class_def)}\n\n{ast.get_docstring(function_def)}"
+    elif not actual_func_name.startswith(skip_prefix):
+        applied_func_name = actual_func_name
+        doc = ast.get_docstring(function_def)
+    else:
+        return None
+
+    class_name = class_def.name if class_def else ""
+
     # the returned object should have the same properties as MethodDocs class in the Java code
-
     args = ', '.join(arg.arg for arg in function_def.args.args)
     return_type = "object"
-    signature = f"{return_type} {name}({args})"
+    signature = f"{return_type} {applied_func_name}({args})"
+    location = f"{current_file.as_posix()}:{function_def.lineno}"
     return {
-        "name": name,
+        "name": applied_func_name,
         "fullName": signature,  # actually the full signature,
         "description": doc or "",  # the doc
         "returnParams": return_type,  # the return type
         "inputParams": args,
         "ClassName": class_name,
         "PackageName": "",
+        "location": location
     }
-
-
-def get_function_info(function_def: FunctionDef) -> dict:
-    return _function_info(function_def.name, function_def, ast.get_docstring(function_def), "")
-
-
-def get_constructor_info(class_def: ClassDef) -> dict | None:
-    init = next((c for c in class_def.body if isinstance(c, FunctionDef) and c.name == '__init__'), None)
-    if not init or not isinstance(init, FunctionDef):
-        return None
-
-    doc = f"{ast.get_docstring(class_def)}\n\n{ast.get_docstring(init)}"
-    return _function_info(class_def.name, init, doc, class_def.name)
 
 
 def get_function_name(call: Call):
